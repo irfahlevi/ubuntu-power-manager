@@ -1,6 +1,6 @@
 # Ubuntu Power Manager
 
-Custom power management for Ubuntu on AMD Ryzen + NVIDIA hybrid GPU laptops. Optimized for **Lenovo IdeaPad with Ryzen 7 5800H + RTX 3060 Mobile / AMD Radeon Vega**.
+Custom power management for Ubuntu on AMD Ryzen + NVIDIA hybrid GPU laptops. Optimized for **Lenovo Legion 7 16ACHg6 (82N6) with Ryzen 7 5800H + RTX 3060 Mobile / AMD Radeon Vega**.
 
 Reduces power draw from ~34W to ~14W (~58% reduction), extending battery life from ~1.7 hrs to ~4.5 hrs.
 
@@ -130,7 +130,7 @@ sudo reboot
 
 ## Hardware Tested On
 
-- **Laptop**: Lenovo IdeaPad Gaming 3
+- **Laptop**: Lenovo Legion 7 16ACHg6 (82N6)
 - **CPU**: AMD Ryzen 7 5800H (8C/16T)
 - **iGPU**: AMD Radeon Vega (Cezanne)
 - **dGPU**: NVIDIA RTX 3060 Mobile Max-Q
