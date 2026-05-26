@@ -1,0 +1,61 @@
+#!/bin/bash
+
+CAP_FREQ=1400000
+BALANCED_FREQ=2500000
+MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq)
+
+enable_all_cpus() {
+    for thread in /sys/devices/system/cpu/cpu[1-9]*/online /sys/devices/system/cpu/cpu[1-9][0-9]*/online; do
+        if [ -f "$thread" ]; then
+            echo 1 > "$thread" 2>/dev/null
+        fi
+    done
+}
+
+set_freq() {
+    local freq=$1
+    for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
+        echo "$freq" > "$cpu" 2>/dev/null
+    done
+}
+
+set_boost() {
+    echo "$1" > /sys/devices/system/cpu/cpufreq/boost 2>/dev/null
+}
+
+apply_profile() {
+    local profile=$1
+    if [ "$profile" = "power-saver" ]; then
+        set_boost 0
+        set_freq "$CAP_FREQ"
+        echo "power-saver: 1.4GHz | boost off"
+    elif [ "$profile" = "balanced" ]; then
+        set_boost 0
+        set_freq "$BALANCED_FREQ"
+        echo "balanced: 2.5GHz | boost off"
+    else
+        set_boost 1
+        set_freq "$MAX_FREQ"
+        echo "performance: 4.47GHz | boost on"
+    fi
+}
+
+if [ -z "$1" ]; then
+    exec /usr/bin/powerprofilesctl "$@"
+fi
+
+if [ "$1" = "get" ] || [ "$1" = "list" ] || [ "$1" = "--help" ]; then
+    exec /usr/bin/powerprofilesctl "$@"
+fi
+
+PROFILE="$1"
+
+if [ "$PROFILE" != "power-saver" ] && [ "$PROFILE" != "balanced" ] && [ "$PROFILE" != "performance" ]; then
+    exec /usr/bin/powerprofilesctl "$@"
+fi
+
+enable_all_cpus
+sleep 0.5
+/usr/bin/powerprofilesctl set "$PROFILE"
+sleep 0.5
+apply_profile "$PROFILE"
